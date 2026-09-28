@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Flame,
   Activity,
-  Layers,
   Sparkles,
 } from "lucide-react";
 import {
@@ -57,7 +56,6 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix?: string }) {
   const frameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    let start = 0;
     const duration = 850;
     const startTime = performance.now();
 

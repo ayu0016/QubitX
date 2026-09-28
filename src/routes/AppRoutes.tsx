@@ -49,7 +49,8 @@ const router = createBrowserRouter([
         children: [
           { path: "/dashboard",   element: <DashboardPage /> },
           { path: "/quantum-lab", element: <QuantumLabPage /> },
-          { path: "/courses",     element: <CoursesPage /> },
+          { path: "/courses/*",     element: <CoursesPage /> },
+          { path: "/course/*",      element: <CoursesPage /> },
           { path: "/challenges",  element: <ChallengesPage /> },
           { path: "/progress",    element: <ProgressPage /> },
           { path: "/community",   element: <CommunityPage /> },

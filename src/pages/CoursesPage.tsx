@@ -1,7 +1,17 @@
+import { Routes, Route } from 'react-router-dom';
+import { CoursesProvider } from './courses/CoursesContext';
+import CourseContentPage from './courses/CourseContentPage';
+import LecturePage from './courses/LecturePage';
+
 export default function CoursesPage() {
   return (
-    <div className="flex items-center justify-center h-full">
-      <p className="text-slate-400 text-sm">Modules / Courses — coming soon</p>
-    </div>
+    <CoursesProvider>
+      <Routes>
+        <Route index element={<CourseContentPage />} />
+        <Route path="module/:moduleId" element={<CourseContentPage />} />
+        <Route path="lesson/:lessonId" element={<LecturePage />} />
+        <Route path="lesson/:lessonId/checkpoint/:checkpointId" element={<LecturePage />} />
+      </Routes>
+    </CoursesProvider>
   );
 }
