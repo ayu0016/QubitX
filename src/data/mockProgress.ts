@@ -33,16 +33,6 @@ export interface Misconception {
   seenTimes: number;
 }
 
-export interface Badge {
-  id: string;
-  name: string;
-  emoji: string;
-  color: string;
-  earned: boolean;
-  requirement?: string;
-  daysLeft?: number;
-}
-
 export interface ActivityDay {
   intensity: 0 | 1 | 2 | 3 | 4; // 0 = rest, 4 = max
 }
@@ -135,16 +125,6 @@ export const activityGrid: ActivityDay[] = [
   {intensity:3},{intensity:3},{intensity:3},{intensity:4},{intensity:0},
   {intensity:0},{intensity:0},{intensity:0},{intensity:0},{intensity:0},
   {intensity:0},{intensity:0},{intensity:0},{intensity:0},
-];
-
-// ── Badges ────────────────────────────────────────────────────────────────────
-export const badges: Badge[] = [
-  { id: "bell-master",  name: "Bell Master",   emoji: "🔔", color: "#F59E0B", earned: true  },
-  { id: "first-circuit",name: "First Circuit", emoji: "⚡", color: "#0EA5E9", earned: true  },
-  { id: "streak-5",     name: "5-Day Streak",  emoji: "🔥", color: "#F97316", earned: true  },
-  { id: "grover-solver",name: "Grover Solver", emoji: "🔍", color: "#94A3B8", earned: false, requirement: "Finish Module 05"   },
-  { id: "phase-master", name: "Phase Master",  emoji: "🌀", color: "#94A3B8", earned: false, requirement: "Master kickback"    },
-  { id: "streak-30",    name: "30-Day Streak", emoji: "🏆", color: "#94A3B8", earned: false, daysLeft: 25                     },
 ];
 
 // ── Recommended next ──────────────────────────────────────────────────────────

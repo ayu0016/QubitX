@@ -1,32 +1,3 @@
-export type CommunityTab = "all" | "trending" | "discussions" | "learners" | "chat";
-
-export interface ChatMessage {
-  id: string;
-  senderName: string;
-  senderInitials: string;
-  senderColor?: string;
-  isCurrentUser: boolean;
-  time: string;
-  text: string;
-  circuitSnippet?: {
-    title: string;
-    code: string;
-  };
-}
-
-export interface ChatChannel {
-  id: string;
-  name: string;
-  type: "channel" | "dm";
-  description?: string;
-  avatarInitials?: string;
-  isOnline?: boolean;
-  unreadCount?: number;
-  lastMessage?: string;
-  lastMessageTime?: string;
-  messages: ChatMessage[];
-}
-
 export interface DiscussionReply {
   id: string;
   author: string;
@@ -92,34 +63,4 @@ export interface LearnerItem {
   discussionsCount: number;
   badges: string[];
   joinedDate: string;
-}
-
-export interface LessonStep {
-  title: string;
-  completed: boolean;
-  current?: boolean;
-}
-
-export interface ModuleItem {
-  id: string;
-  moduleNumber: string;
-  title: string;
-  progress: number;
-  description: string;
-  accentColor: "indigo" | "blue" | "amber";
-  difficulty: "Beginner" | "Intermediate" | "Advanced" | "Beginner → Intermediate";
-  category: string;
-  lessons: LessonStep[];
-}
-
-export interface RecommendationItem {
-  id: string;
-  title: string;
-  description: string;
-  dotColor: string;
-  whyRecommended: string;
-  difficulty: string;
-  estimatedTime: string;
-  prerequisite: string;
-  currentProgress: number;
 }

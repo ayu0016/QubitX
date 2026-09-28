@@ -27,11 +27,11 @@ export default function ResultsPanel({
 
   // Filter significant states (>0.01) to keep the display clean and beautiful
   const activeEntries = Object.entries(probabilities)
-    .filter(([_, prob]) => prob > 0.01 || Object.keys(probabilities).length <= 4)
+    .filter(([, prob]) => prob > 0.01 || Object.keys(probabilities).length <= 4)
     .slice(0, 4);
 
   const zeroStates = Object.entries(probabilities)
-    .filter(([_, prob]) => prob <= 0.01)
+    .filter(([, prob]) => prob <= 0.01)
     .map(([state]) => state);
 
   // Maximum probability for bar scaling (normalized to 120px max height)

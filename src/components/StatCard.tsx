@@ -27,16 +27,14 @@ const TINT_STYLES: Record<
 
 const ICONS: Record<StatCardData["tint"], React.ReactNode> = {
   indigo: (
-    // Bar chart / mastery icon
-    <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+    <svg width="16" height="18" viewBox="0 0 18 20" fill="none">
       <rect x="0" y="8" width="4" height="12" rx="2" fill="currentColor" />
       <rect x="7" y="4" width="4" height="16" rx="2" fill="currentColor" />
       <rect x="14" y="0" width="4" height="20" rx="2" fill="currentColor" />
     </svg>
   ),
   blue: (
-    // CPU / simulator icon
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+    <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
       <rect x="4" y="4" width="10" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
       <rect x="7" y="7" width="4" height="4" fill="currentColor" />
       <line x1="0" y1="6" x2="4" y2="6" stroke="currentColor" strokeWidth="1.5" />
@@ -50,8 +48,7 @@ const ICONS: Record<StatCardData["tint"], React.ReactNode> = {
     </svg>
   ),
   amber: (
-    // Flame / streak icon
-    <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
+    <svg width="14" height="18" viewBox="0 0 16 20" fill="none">
       <path d="M8 0C8 0 14 6 14 11a6 6 0 01-12 0C2 8 5 5 5 5S4 9 7 10C7 8 8 4 8 0z" fill="currentColor" />
     </svg>
   ),
@@ -70,15 +67,15 @@ export default function StatCard({ data }: StatCardProps) {
 
   return (
     <div
-      className={`flex-1 p-6 rounded-2xl border ${tint.card} flex flex-col gap-4`}
+      className={`flex-1 p-5 rounded-2xl border ${tint.card} flex flex-col gap-3`}
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
+        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
           {data.label}
         </span>
         <div
-          className={`w-12 h-12 ${tint.badge} rounded-xl flex items-center justify-center ${tint.icon}`}
+          className={`w-10 h-10 ${tint.badge} rounded-xl flex items-center justify-center ${tint.icon}`}
         >
           {ICONS[data.tint]}
         </div>
@@ -88,27 +85,27 @@ export default function StatCard({ data }: StatCardProps) {
       <div className="flex items-end justify-between">
         <div>
           <div className="flex items-baseline gap-1">
-            <span className="text-[38px] font-extrabold text-slate-900 leading-none">
+            <span className="text-[32px] font-extrabold text-slate-900 leading-none">
               {data.value}
             </span>
             {data.suffix && (
-              <span className="text-[22px] font-normal text-slate-400 leading-none">
+              <span className="text-[18px] font-normal text-slate-400 leading-none">
                 {data.suffix}
               </span>
             )}
           </div>
-          <p className="text-[14px] text-slate-500 mt-1.5">{data.subLabel}</p>
+          <p className="text-[12px] text-slate-500 mt-1">{data.subLabel}</p>
         </div>
 
         {/* Sparkline bars */}
         {data.sparkline && (
-          <div className="flex items-end gap-1.5 pb-5">
+          <div className="flex items-end gap-1 pb-4">
             {data.sparkline.map((h, i) => (
               <div
                 key={i}
-                className="w-2 rounded-full"
+                className="w-1.5 rounded-full"
                 style={{
-                  height: `${(h / maxSparkline) * 32}px`,
+                  height: `${(h / maxSparkline) * 26}px`,
                   background: SPARKLINE_COLORS[i % SPARKLINE_COLORS.length],
                 }}
               />
@@ -117,7 +114,6 @@ export default function StatCard({ data }: StatCardProps) {
         )}
       </div>
 
-      {/* Invisible navigation trigger kept for consistency but no visible button on stat cards */}
       <span className="sr-only" onClick={() => navigate(ROUTES.progress)}>
         View progress
       </span>

@@ -21,9 +21,9 @@ import {
   predictionAccuracy,
   misconceptions,
   activityGrid,
-  badges,
   recommendedNext,
 } from "../data/mockProgress";
+import { CHALLENGE_BADGES } from "../data/mockChallenges";
 
 // ─── Utility ─────────────────────────────────────────────────────────────────
 
@@ -1000,7 +1000,7 @@ export default function ProgressPage() {
             <div>
               <h2 className="text-lg font-bold text-slate-900">Badges & Achievements</h2>
               <p className="text-xs text-slate-500 mt-0.5">
-                {badges.filter((b) => b.earned).length} earned, {badges.filter((b) => !b.earned).length} to unlock
+                {CHALLENGE_BADGES.filter((b) => b.earned).length} earned · {CHALLENGE_BADGES.filter((b) => !b.earned).length} to unlock
               </p>
             </div>
             <span className="px-3 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-bold text-amber-800">
@@ -1009,20 +1009,25 @@ export default function ProgressPage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {badges.map((badge) => (
+            {CHALLENGE_BADGES.map((badge) => (
               <div
                 key={badge.id}
                 className={cn(
                   "flex flex-col items-center text-center justify-between p-3.5 rounded-2xl border transition-all duration-200 gap-2",
                   badge.earned
-                    ? "bg-slate-50/80 border-slate-100 hover:-translate-y-0.5 hover:shadow-sm"
+                    ? "hover:-translate-y-0.5 hover:shadow-sm"
                     : "bg-slate-50/30 border-slate-200/70 opacity-70"
                 )}
+                style={
+                  badge.earned
+                    ? { background: badge.bg, borderColor: badge.border }
+                    : undefined
+                }
               >
                 <div
                   className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl shrink-0 shadow-sm"
                   style={{
-                    background: badge.earned ? `${badge.color}20` : "#F1F5F9",
+                    background: badge.earned ? `${badge.color}25` : "#F1F5F9",
                   }}
                 >
                   {badge.earned ? (
@@ -1034,19 +1039,29 @@ export default function ProgressPage() {
                 <div className="min-w-0">
                   <p
                     className="text-xs font-bold leading-tight"
-                    style={{ color: badge.earned ? "#1E293B" : "#475569" }}
+                    style={{ color: badge.earned ? badge.textColor : "#475569" }}
                   >
                     {badge.name}
                   </p>
-                  {!badge.earned && badge.requirement && (
-                    <p className="text-[10px] text-slate-400 mt-1">{badge.requirement}</p>
+                  {!badge.earned && (
+                    <p className="text-[10px] text-slate-400 mt-1 leading-snug">
+                      {badge.requirement}
+                    </p>
                   )}
-                  {!badge.earned && badge.daysLeft !== undefined && (
-                    <p className="text-[10px] text-slate-400 mt-1">{badge.daysLeft} days left</p>
+                  {!badge.earned && badge.progress > 0 && (
+                    <div className="mt-1.5 w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-indigo-400"
+                        style={{ width: `${badge.progress}%` }}
+                      />
+                    </div>
                   )}
                 </div>
                 {badge.earned && (
-                  <span className="flex items-center gap-1 text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                  <span
+                    className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    style={{ background: `${badge.color}20`, color: badge.textColor }}
+                  >
                     <Zap size={10} /> Unlocked
                   </span>
                 )}

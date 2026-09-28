@@ -82,6 +82,17 @@ export interface RecommendationRowData {
   dotColor: string;
 }
 
+export interface DashboardNotification {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  type: "challenge" | "simulator" | "badge" | "tutor";
+  unread: boolean;
+  linkText?: string;
+  linkTo?: string;
+}
+
 // ─── Chat ─────────────────────────────────────────────────────────────────────
 
 export type ChatSender = "tutor" | "user";

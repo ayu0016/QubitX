@@ -114,7 +114,7 @@ export function simulateCircuit(
   const numStates = 1 << n;
 
   // Initial state |0...0⟩
-  let state: Complex[] = Array.from({ length: numStates }, (_, i) => ({
+  const state: Complex[] = Array.from({ length: numStates }, (_, i) => ({
     re: i === 0 ? 1 : 0,
     im: 0,
   }));
