@@ -34,19 +34,78 @@ const DEFAULT_BELL_CIRCUIT: CircuitState = {
   ],
 };
 
-export default function QuantumLabPage() {
-  // ── Workspace State ─────────────────────────────────────────────────────────
-  const [framework, setFramework] = useState<Framework>("qiskit");
-  const [language, setLanguage] = useState<Language>("python");
-  const [editorMode, setEditorMode] = useState<EditorMode>("split");
-  const [backend, setBackend] = useState<Backend>("qiskit_aer");
-  const [shots, setShots] = useState<number>(1024);
-  const [resultMode, setResultMode] = useState<ResultMode>("counts");
+type InitialWorkspaceState = {
+  framework: Framework;
+  language: Language;
+  editorMode: EditorMode;
+  backend: Backend;
+  shots: number;
+  resultMode: ResultMode;
+  circuit: CircuitState;
+  code: string;
+  simulationResult: SimulationResult | null;
+};
 
-  const [circuit, setCircuit] = useState<CircuitState>(DEFAULT_BELL_CIRCUIT);
-  const [code, setCode] = useState<string>(() =>
-    generateCodeFromCircuit(DEFAULT_BELL_CIRCUIT, "qiskit", "python")
-  );
+function getInitialWorkspaceState(): InitialWorkspaceState {
+  const fallbackCircuit = DEFAULT_BELL_CIRCUIT;
+  const fallback = {
+    framework: "qiskit" as Framework,
+    language: "python" as Language,
+    editorMode: "split" as EditorMode,
+    backend: "qiskit_aer" as Backend,
+    shots: 1024,
+    resultMode: "counts" as ResultMode,
+    circuit: fallbackCircuit,
+    code: generateCodeFromCircuit(fallbackCircuit, "qiskit", "python"),
+    simulationResult: simulateCircuit(fallbackCircuit, 1024, "Qiskit Aer"),
+  };
+
+  try {
+    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!savedData) return fallback;
+
+    const parsed = JSON.parse(savedData) as Partial<InitialWorkspaceState>;
+    const circuit = parsed.circuit ?? fallbackCircuit;
+    const framework = parsed.framework ?? "qiskit";
+    const language = parsed.language ?? "python";
+    const editorMode = parsed.editorMode ?? "split";
+    const backend = parsed.backend ?? "qiskit_aer";
+    const shots = parsed.shots ?? 1024;
+    const resultMode = parsed.resultMode ?? "counts";
+
+    return {
+      framework,
+      language,
+      editorMode,
+      backend,
+      shots,
+      resultMode,
+      circuit,
+      code: generateCodeFromCircuit(circuit, framework, language),
+      simulationResult: simulateCircuit(
+        circuit,
+        shots,
+        backend === "local_sim" ? "Local Simulator" : "Qiskit Aer"
+      ),
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+export default function QuantumLabPage() {
+  const [workspace] = useState(() => getInitialWorkspaceState());
+
+  // ── Workspace State ─────────────────────────────────────────────────────────
+  const [framework, setFramework] = useState<Framework>(workspace.framework);
+  const [language, setLanguage] = useState<Language>(workspace.language);
+  const [editorMode, setEditorMode] = useState<EditorMode>(workspace.editorMode);
+  const [backend, setBackend] = useState<Backend>(workspace.backend);
+  const [shots, setShots] = useState<number>(workspace.shots);
+  const [resultMode, setResultMode] = useState<ResultMode>(workspace.resultMode);
+
+  const [circuit, setCircuit] = useState<CircuitState>(workspace.circuit);
+  const [code, setCode] = useState<string>(workspace.code);
 
   const [selectedGateId, setSelectedGateId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("saved");
@@ -56,52 +115,17 @@ export default function QuantumLabPage() {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
   // Simulation result derived from circuit state
-  const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(() =>
-    simulateCircuit(DEFAULT_BELL_CIRCUIT, 1024, "Qiskit Aer")
-  );
+  const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(workspace.simulationResult);
 
   const parseTimerRef = useRef<number | null>(null);
   const saveTimerRef = useRef<number | null>(null);
 
-  // ── LocalStorage Initialization ───────────────────────────────────────────
   useEffect(() => {
-    try {
-      const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (savedData) {
-        const parsed = JSON.parse(savedData);
-        if (parsed.circuit) setCircuit(parsed.circuit);
-        if (parsed.framework) setFramework(parsed.framework);
-        if (parsed.language) setLanguage(parsed.language);
-        if (parsed.editorMode) setEditorMode(parsed.editorMode);
-        if (parsed.backend) setBackend(parsed.backend);
-        if (parsed.shots) setShots(parsed.shots);
-        if (parsed.resultMode) setResultMode(parsed.resultMode);
-
-        const initialCode = generateCodeFromCircuit(
-          parsed.circuit || DEFAULT_BELL_CIRCUIT,
-          parsed.framework || "qiskit",
-          parsed.language || "python"
-        );
-        setCode(initialCode);
-
-        const initialSim = simulateCircuit(
-          parsed.circuit || DEFAULT_BELL_CIRCUIT,
-          parsed.shots || 1024,
-          parsed.backend === "local_sim" ? "Local Simulator" : "Qiskit Aer"
-        );
-        setSimulationResult(initialSim);
-      }
-    } catch {
-      // Fallback to default
-    }
-  }, []);
-
-  // ── Auto-Save to LocalStorage ──────────────────────────────────────────────
-  const triggerAutoSave = useCallback(() => {
-    setSaveStatus("saving");
     if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
 
     saveTimerRef.current = window.setTimeout(() => {
+      setSaveStatus("saving");
+
       try {
         localStorage.setItem(
           LOCAL_STORAGE_KEY,
@@ -120,11 +144,13 @@ export default function QuantumLabPage() {
         setSaveStatus("error");
       }
     }, 600);
-  }, [circuit, framework, language, editorMode, backend, shots, resultMode]);
 
-  useEffect(() => {
-    triggerAutoSave();
-  }, [triggerAutoSave]);
+    return () => {
+      if (saveTimerRef.current) {
+        window.clearTimeout(saveTimerRef.current);
+      }
+    };
+  }, [circuit, framework, language, editorMode, backend, shots, resultMode]);
 
   // ── Run / Simulate Action ──────────────────────────────────────────────────
   const handleRunCircuit = useCallback(() => {

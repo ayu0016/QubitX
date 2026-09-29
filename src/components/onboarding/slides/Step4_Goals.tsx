@@ -9,7 +9,7 @@ interface Props {
 
 // ─── Goal options ─────────────────────────────────────────────────────────────
 
-export const ALL_GOALS = [
+const ALL_GOALS = [
   "Understand superposition",
   "Build my first circuit",
   "Prep for a quantum course",

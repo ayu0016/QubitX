@@ -29,6 +29,14 @@ interface Props {
   editorMode?: "split" | "ide" | "circuit";
 }
 
+const createGateId = (type: GateType) => {
+  const uniquePart =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  return `gate-${type.toLowerCase()}-${uniquePart}`;
+};
+
 const GATE_METAS: {
   type: GateType;
   label: string;
@@ -194,7 +202,7 @@ export default function CircuitEditorCard({
     );
 
     const newGate: GateItem = {
-      id: `gate-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      id: createGateId(type),
       type,
       qubit,
       column,

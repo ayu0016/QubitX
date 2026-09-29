@@ -8,9 +8,7 @@ export default function CoursesPage() {
     <CoursesProvider>
       <Routes>
         <Route index element={<CourseContentPage />} />
-        <Route path="module/:moduleId" element={<CourseContentPage />} />
         <Route path="lesson/:lessonId" element={<LecturePage />} />
-        <Route path="lesson/:lessonId/checkpoint/:checkpointId" element={<LecturePage />} />
       </Routes>
     </CoursesProvider>
   );

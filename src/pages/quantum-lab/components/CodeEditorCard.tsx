@@ -83,24 +83,29 @@ export default function CodeEditorCard({
 
   // When simulated run starts/finishes, append realistic execution logs
   useEffect(() => {
-    if (isSimulating) {
-      const now = new Date().toLocaleTimeString();
-      setLogs((prev) => [
-        ...prev,
-        {
-          id: `log-${Date.now()}-1`,
-          timestamp: now,
-          text: `> python main.py --backend=${framework}_aer --shots=1024`,
-          type: "info",
-        },
-        {
-          id: `log-${Date.now()}-2`,
-          timestamp: now,
-          text: `[AerSimulator] Transpiling circuit (${numQubits} qubits, ${gateCount} gates)...`,
-          type: "info",
-        },
-      ]);
-    }
+    if (!isSimulating) return;
+
+    const now = new Date().toLocaleTimeString();
+    const nextLogs: ConsoleLog[] = [
+      {
+        id: `log-${Date.now()}-1`,
+        timestamp: now,
+        text: `> python main.py --backend=${framework}_aer --shots=1024`,
+        type: "info",
+      },
+      {
+        id: `log-${Date.now()}-2`,
+        timestamp: now,
+        text: `[AerSimulator] Transpiling circuit (${numQubits} qubits, ${gateCount} gates)...`,
+        type: "info",
+      },
+    ];
+
+    const timer = window.setTimeout(() => {
+      setLogs((prev) => [...prev, ...nextLogs]);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [isSimulating, framework, numQubits, gateCount]);
 
   const handleCopyCode = () => {
@@ -273,7 +278,10 @@ export default function CodeEditorCard({
       </div>
 
       {/* ── 2. Editor Body: Line numbers + Monospace Textarea ───────────── */}
-      <div className="relative flex-1 flex overflow-hidden min-h-[280px] bg-[#0D1525]">
+      <div
+        className="relative flex-1 flex overflow-hidden bg-[#0D1525]"
+        style={{ minHeight: `${Math.max(280, lines.length * 24 + 64)}px` }}
+      >
         {/* Line numbers gutter */}
         <div className="w-12 py-4 select-none bg-[#090F1A] text-right pr-4 text-slate-600 font-mono text-[13px] leading-6 shrink-0 border-r border-slate-800/60">
           {lines.map((_, i) => (
@@ -282,7 +290,7 @@ export default function CodeEditorCard({
         </div>
 
         {/* Editable Textarea with direct visible styling */}
-        <div className="relative flex-1 h-full p-4 overflow-hidden">
+        <div className="relative flex-1 min-w-0 h-full p-4 overflow-hidden">
           <textarea
             ref={textareaRef}
             value={code}
@@ -292,7 +300,8 @@ export default function CodeEditorCard({
             autoCapitalize="off"
             autoComplete="off"
             autoCorrect="off"
-            className="w-full h-full font-mono text-[13.5px] leading-6 bg-transparent text-[#E2E8F0] caret-emerald-400 resize-none outline-none overflow-auto whitespace-pre selection:bg-indigo-600 selection:text-white"
+            className="block w-full font-mono text-[13.5px] leading-6 bg-transparent text-[#E2E8F0] caret-emerald-400 resize-none outline-none overflow-x-auto overflow-y-hidden whitespace-pre selection:bg-indigo-600 selection:text-white"
+            style={{ height: `${Math.max(248, lines.length * 24)}px` }}
             placeholder="# Write your quantum circuit here..."
             aria-label="Quantum Circuit Code Editor"
           />

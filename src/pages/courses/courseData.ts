@@ -20,7 +20,6 @@ export interface VideoChapter {
 
 export interface Lesson {
   id: string;
-  moduleId: string;
   title: string;
   type: LessonType;
   durationMin: number;
@@ -60,8 +59,8 @@ export const INITIAL_COURSE_DATA: CourseData = {
       description: 'Build the mental model for qubits, states, and measurement.',
       locked: false,
       lessons: [
-        { id: 'qubits-and-quantum-states', moduleId: 'fundamentals', title: 'Qubits and Quantum States', type: 'lecture', durationMin: 12, status: 'completed' },
-        { id: 'measurement-basics', moduleId: 'fundamentals', title: 'Measurement Basics', type: 'lecture', durationMin: 10, status: 'completed' }
+        { id: 'qubits-and-quantum-states', title: 'Qubits and Quantum States', type: 'lecture', durationMin: 12, status: 'completed' },
+        { id: 'measurement-basics', title: 'Measurement Basics', type: 'lecture', durationMin: 10, status: 'completed' }
       ]
     },
     {
@@ -71,10 +70,9 @@ export const INITIAL_COURSE_DATA: CourseData = {
       description: 'Learn how gates transform the state of a qubit.',
       locked: false,
       lessons: [
-        { id: 'pauli-gates', moduleId: 'quantum-gates', title: 'Pauli Gates', type: 'lecture', durationMin: 11, status: 'completed' },
+        { id: 'pauli-gates', title: 'Pauli Gates', type: 'lecture', durationMin: 11, status: 'completed' },
         { 
           id: 'hadamard-gate', 
-          moduleId: 'quantum-gates', 
           title: 'Hadamard Gate', 
           type: 'lecture', 
           durationMin: 14, 
@@ -105,7 +103,7 @@ export const INITIAL_COURSE_DATA: CourseData = {
             }
           ]
         },
-        { id: 'phase-gates', moduleId: 'quantum-gates', title: 'Phase Gates', type: 'lecture', durationMin: 9, status: 'available' }
+        { id: 'phase-gates', title: 'Phase Gates', type: 'lecture', durationMin: 9, status: 'available' }
       ]
     },
     {
@@ -117,7 +115,6 @@ export const INITIAL_COURSE_DATA: CourseData = {
       lessons: [
         { 
           id: 'entanglement-bell-states', 
-          moduleId: 'multi-qubit', 
           title: 'Entanglement & Bell States', 
           type: 'lecture', 
           durationMin: 14, 
@@ -149,8 +146,8 @@ export const INITIAL_COURSE_DATA: CourseData = {
             }
           ]
         },
-        { id: 'measurement-correlation', moduleId: 'multi-qubit', title: 'Measurement Correlation', type: 'lecture', durationMin: 9, status: 'locked' },
-        { id: 'module-assignment', moduleId: 'multi-qubit', title: 'Module Assignment', type: 'challenge', durationMin: 8, status: 'locked' }
+        { id: 'measurement-correlation', title: 'Measurement Correlation', type: 'lecture', durationMin: 9, status: 'locked' },
+        { id: 'module-assignment', title: 'Module Assignment', type: 'challenge', durationMin: 8, status: 'locked' }
       ]
     },
     {
@@ -160,8 +157,8 @@ export const INITIAL_COURSE_DATA: CourseData = {
       description: 'Apply your foundations to algorithms with a quantum advantage.',
       locked: true,
       lessons: [
-        { id: 'deutsch-jozsa', moduleId: 'advanced-algorithms', title: 'Deutsch-Jozsa', type: 'lecture', durationMin: 15, status: 'locked' },
-        { id: 'grovers-algorithm', moduleId: 'advanced-algorithms', title: "Grover's Algorithm", type: 'lecture', durationMin: 20, status: 'locked' }
+        { id: 'deutsch-jozsa', title: 'Deutsch-Jozsa', type: 'lecture', durationMin: 15, status: 'locked' },
+        { id: 'grovers-algorithm', title: "Grover's Algorithm", type: 'lecture', durationMin: 20, status: 'locked' }
       ]
     }
   ]

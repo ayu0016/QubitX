@@ -448,7 +448,9 @@ function MeasureMeModal({
   expertPercent: number;
   onClose: () => void;
 }) {
-  const outcome = Math.random() > 0.5 ? "Expert" : "Novice";
+  const [outcome] = useState<"Expert" | "Novice">(() =>
+    expertPercent >= 50 ? "Expert" : "Novice"
+  );
   const [measured, setMeasured] = useState(false);
   const [collapsed, setCollapsed] = useState(true);
 

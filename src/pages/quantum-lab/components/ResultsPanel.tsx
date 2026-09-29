@@ -76,7 +76,7 @@ export default function ResultsPanel({
       {/* ── Two Result Cards ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* ── Card 1: Theoretical Distribution ─────────────────────────── */}
-        <div className="bg-[#F8FAFF] rounded-[24px] border border-indigo-100/80 p-6 flex flex-col justify-between shadow-2xs min-h-[260px]">
+        <div className="min-w-0 bg-[#F8FAFF] rounded-[24px] border border-indigo-100/80 p-6 flex flex-col justify-between shadow-2xs min-h-[320px]">
           {/* Card Top */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-[17px] text-[#0B1C30]">
@@ -88,7 +88,7 @@ export default function ResultsPanel({
           </div>
 
           {/* Visualization Bars Area */}
-          <div className="relative h-[150px] flex items-end justify-around px-8 pb-7">
+          <div className="relative h-[190px] shrink-0 flex items-end justify-around px-8 pb-7">
             {/* Dotted benchmark reference line */}
             <div
               className="absolute left-6 right-6 border-b border-dashed border-indigo-300 pointer-events-none"
@@ -132,23 +132,23 @@ export default function ResultsPanel({
         </div>
 
         {/* ── Card 2: Sampled Counts · Shots ──────────────────────────── */}
-        <div className="bg-[#F6FCF9] rounded-[24px] border border-emerald-100/80 p-6 flex flex-col justify-between shadow-2xs min-h-[260px]">
+        <div className="min-w-0 bg-[#F6FCF9] rounded-[24px] border border-emerald-100/80 p-6 flex flex-col justify-between shadow-2xs min-h-[320px]">
           {/* Card Top */}
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-[17px] text-[#0B1C30]">
+          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2 mb-4">
+            <h3 className="min-w-0 flex-1 font-bold text-[17px] leading-snug text-[#0B1C30]">
               {resultMode === "probabilities"
                 ? `Sampled probabilities · ${shots} shots`
                 : resultMode === "statevector"
                 ? `State amplitudes · ${shots} shots`
                 : `Sampled counts · ${shots} shots`}
             </h3>
-            <span className="bg-white px-3 py-1 rounded-full border border-slate-200 text-slate-500 font-mono text-[11px] shadow-2xs">
+            <span className="shrink-0 bg-white px-3 py-1 rounded-full border border-slate-200 text-slate-500 font-mono text-[11px] shadow-2xs">
               Seed #{seed}
             </span>
           </div>
 
           {/* Visualization Bars Area */}
-          <div className="relative h-[150px] flex items-end justify-around px-8 pb-7">
+          <div className="relative h-[190px] shrink-0 flex items-end justify-around px-8 pb-7">
             {/* Dotted benchmark reference line */}
             <div
               className="absolute left-6 right-6 border-b border-dashed border-emerald-300 pointer-events-none"

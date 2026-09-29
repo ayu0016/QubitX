@@ -46,17 +46,3 @@ export interface SimulationResult {
   backendName: string;
 }
 
-export interface WorkspaceState {
-  framework: Framework;
-  language: Language;
-  editorMode: EditorMode;
-  backend: Backend;
-  shots: number;
-  resultMode: ResultMode;
-  saveStatus: SaveStatus;
-  syncStatus: SyncStatus;
-  circuit: CircuitState;
-  code: string;
-  selectedGateId: string | null;
-  result: SimulationResult | null;
-}

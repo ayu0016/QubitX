@@ -51,16 +51,18 @@ export default function LecturePage() {
   const module = lessonData?.module;
   const progress = lessonId ? lessonProgress[lessonId] : null;
   
-  // Default active checkpoint to the first unfinished checkpoint (or first one)
   const [activeCheckpointId, setActiveCheckpointId] = useState<string | null>(() => {
     if (lesson?.checkpoints && lesson.checkpoints.length > 0) {
-      return lesson.checkpoints[0].id;
+      return lesson.checkpoints.find(cp => !progress?.checkpointsDone?.includes(cp.id))?.id || lesson.checkpoints[0].id;
     }
     return null;
   });
 
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [checkpointSubmitted, setCheckpointSubmitted] = useState(false);
+  const [checkpointSubmitted, setCheckpointSubmitted] = useState<boolean>(() => {
+    const firstCheckpointId = lesson?.checkpoints?.[0]?.id;
+    return Boolean(firstCheckpointId && progress?.checkpointsDone?.includes(firstCheckpointId));
+  });
   const [isSimulationRunning, setIsSimulationRunning] = useState(false);
   const [simulationResults, setSimulationResults] = useState<{ c00: number; c11: number } | null>(null);
 
@@ -76,17 +78,7 @@ export default function LecturePage() {
     if (videoRef.current && progress?.watchedSeconds && progress.watchedSeconds > 0) {
       videoRef.current.currentTime = progress.watchedSeconds;
     }
-  }, [lessonId]);
-
-  // Reset checkpoint state when lesson changes
-  useEffect(() => {
-    if (lesson?.checkpoints && lesson.checkpoints.length > 0) {
-      const unfinished = lesson.checkpoints.find(cp => !progress?.checkpointsDone?.includes(cp.id));
-      setActiveCheckpointId(unfinished?.id || lesson.checkpoints[0].id);
-      setSelectedOption(null);
-      setCheckpointSubmitted(progress?.checkpointsDone?.includes(lesson.checkpoints[0].id) ?? false);
-    }
-  }, [lessonId, lesson, progress]);
+  }, [lessonId, progress?.watchedSeconds]);
 
   const formatTime = (time: number) => {
     if (isNaN(time) || time < 0) return '00:00';
@@ -110,6 +102,23 @@ export default function LecturePage() {
     }
   }, []);
 
+  const toggleMute = useCallback(() => {
+    if (!videoRef.current) return;
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!videoContainerRef.current) return;
+    if (!document.fullscreenElement) {
+      videoContainerRef.current.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }, []);
+
   // Keyboard accessibility
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -129,13 +138,7 @@ export default function LecturePage() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handlePlayPause]);
-
-  const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !videoRef.current.muted;
-    setIsMuted(videoRef.current.muted);
-  };
+  }, [handlePlayPause, toggleMute, toggleFullscreen]);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!videoRef.current) return;
@@ -143,17 +146,6 @@ export default function LecturePage() {
     videoRef.current.volume = v;
     setVolume(v);
     setIsMuted(v === 0);
-  };
-
-  const toggleFullscreen = () => {
-    if (!videoContainerRef.current) return;
-    if (!document.fullscreenElement) {
-      videoContainerRef.current.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-    } else {
-      document.exitFullscreen();
-    }
   };
 
   useEffect(() => {
@@ -227,6 +219,17 @@ export default function LecturePage() {
       setCurrentTime(newTime);
     }
   };
+
+  const toggleCaptions = useCallback(() => {
+    setCaptionsActive((current) => {
+      const nextValue = !current;
+      const track = videoRef.current?.textTracks?.[0];
+      if (track) {
+        track.mode = nextValue ? 'showing' : 'hidden';
+      }
+      return nextValue;
+    });
+  }, []);
 
   const handleCheckpointSubmit = () => {
     if (selectedOption === null || !activeCheckpointId || !lessonId) return;
@@ -472,13 +475,7 @@ export default function LecturePage() {
               {/* CC button */}
               <button 
                 type="button"
-                onClick={() => {
-                  setCaptionsActive(v => !v);
-                  const trk = videoRef.current?.textTracks[0];
-                  if (trk) {
-                    trk.mode = trk.mode === 'showing' ? 'hidden' : 'showing';
-                  }
-                }}
+                onClick={toggleCaptions}
                 className={clsx(
                   "px-2 py-0.5 rounded text-[11px] font-bold border transition-colors cursor-pointer",
                   captionsActive ? "bg-white/20 border-white text-white" : "border-white/50 text-white/60 hover:text-white"

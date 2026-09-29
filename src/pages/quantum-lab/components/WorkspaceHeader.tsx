@@ -10,7 +10,6 @@ interface Props {
   editorMode: EditorMode;
   onEditorModeChange: (m: EditorMode) => void;
   saveStatus: SaveStatus;
-  circuitTitle?: string;
 }
 
 const FRAMEWORKS: { id: Framework; label: string; tag: string }[] = [

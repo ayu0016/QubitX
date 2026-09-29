@@ -33,7 +33,7 @@ export default function CourseContentPage() {
       if (matchedLessons.length > 0) return { ...mod, lessons: matchedLessons };
       return null;
     }).filter(Boolean) as typeof course.modules;
-  }, [course.modules, search]);
+  }, [course, search]);
 
   const toggleModule = (id: string) => {
     setExpandedModules(prev => ({ ...prev, [id]: !prev[id] }));
