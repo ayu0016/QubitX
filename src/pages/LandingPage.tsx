@@ -1,5 +1,6 @@
 import landingSvg from "../assets/landing page.svg";
 import { Link } from "react-router-dom";
+import { ROUTES } from "../utils/routes";
 
 const LandingPage = () => {
   return (
@@ -16,11 +17,11 @@ const LandingPage = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link to="/login" className="text-black text-sm hover:opacity-70 transition-opacity">
+          <Link to={ROUTES.login} className="text-black text-sm hover:opacity-70 transition-opacity">
             Log in
           </Link>
           <Link
-            to="/signup"
+            to={ROUTES.signup}
             className="bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800 transition-colors"
           >
             Get started
@@ -28,11 +29,13 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      <img
-        src={landingSvg}
-        alt="QubitX landing page"
-        className="w-full block"
-      />
+      <Link to={ROUTES.signup} className="block cursor-pointer">
+        <img
+          src={landingSvg}
+          alt="QubitX landing page"
+          className="w-full block"
+        />
+      </Link>
     </div>
   );
 };
